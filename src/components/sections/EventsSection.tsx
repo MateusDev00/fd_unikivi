@@ -1,18 +1,20 @@
-// Server Component – dados via API
+'use client';
+
+import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { EventCard } from '@/components/home/EventCard';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 
-export async function EventsSection() {
-  let events: any[] = [];
-  let total = 0;
-  try {
-    const res = await api.getEventos(1, 12);
-    events = res.data;
-    total = res.meta.total;
-  } catch (error) {
-    console.error('Erro ao carregar eventos:', error);
-  }
+export function EventsSection() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getEventos(1, 12)
+      .then(res => setEvents(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <section className="py-16 bg-white">
@@ -22,14 +24,17 @@ export async function EventsSection() {
           title="Próximos Eventos"
           description="Participe nos nossos seminários, conferências e workshops."
         />
-
-        {events.length === 0 ? (
-          <p className="text-center text-body mt-8">
-            Nenhum evento recente.
-          </p>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-48 bg-gray-200 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        ) : events.length === 0 ? (
+          <p className="text-center text-body mt-8">Nenhum evento recente.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {events.map((event) => (
+            {events.map(event => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
