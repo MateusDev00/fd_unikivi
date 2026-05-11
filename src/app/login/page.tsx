@@ -211,15 +211,7 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-body">
-              Não tem uma conta?{' '}
-              <Link
-                href="/cadastro"
-                className="text-primary font-medium hover:underline"
-              >
-                Criar conta
-              </Link>
-            </p>
+          
           </div>
         </motion.div>
       </div>

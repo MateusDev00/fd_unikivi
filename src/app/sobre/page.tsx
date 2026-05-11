@@ -177,9 +177,6 @@ export default function SobrePage() {
               Candidate‑se a uma das nossas licenciaturas ou inscreva‑se nos cursos de curta duração.
             </p>
             <div className="flex justify-center gap-4 flex-wrap">
-              <Link href="/cadastro" className="bg-primary text-white px-8 py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors">
-                Criar conta
-              </Link>
               <Link href="/contactos" className="border border-primary text-primary px-8 py-3 rounded-xl font-medium hover:bg-primary-light transition-colors">
                 Contactar
               </Link>
