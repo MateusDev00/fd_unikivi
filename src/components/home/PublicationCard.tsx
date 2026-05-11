@@ -46,13 +46,13 @@ export function PublicationCard({ publication }: PublicationCardProps) {
             {/* Aqui podemos usar um resumo, mas como não temos campo resumo, usamos os primeiros caracteres */}
             {publication.conteudo.replace(/<[^>]*>/g, '').substring(0, 120)}...
           </p>
-          <button
+        <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center text-primary font-medium hover:underline"
+            className="inline-flex items-center text-primary font-medium hover:underline mt-4"
           >
-            Ler mais
+            Saber Mais
             <ArrowRight className="ml-2 h-4 w-4" />
-          </button>
+        </button>
         </div>
       </div>
 
