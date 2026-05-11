@@ -2,17 +2,16 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 
-export async function saveFile(
-  file: File,
-  folder: string,
-  mimes?: string[]
-): Promise<string> {
-  // Se fornecida uma lista de tipos permitidos, valida o ficheiro
-  if (mimes && mimes.length > 0 && !mimes.includes(file.type)) {
+export async function saveFile(file: File, folder: string, allowedMimes?: string[]): Promise<string> {
+  // Validação de tipo (se fornecida)
+  if (allowedMimes && !allowedMimes.includes(file.type)) {
     throw new Error(`Tipo de ficheiro não permitido: ${file.type}`);
   }
 
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
+  // Na Vercel, usa /tmp; em desenvolvimento, usa public/uploads
+  const baseDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), 'public');
+  const uploadDir = path.join(baseDir, 'uploads', folder);
+
   await mkdir(uploadDir, { recursive: true });
 
   const ext = path.extname(file.name);
@@ -22,5 +21,6 @@ export async function saveFile(
   const buffer = Buffer.from(await file.arrayBuffer());
   await writeFile(filepath, buffer);
 
+  // Retorna o caminho acessível publicamente
   return `/uploads/${folder}/${filename}`;
 }
