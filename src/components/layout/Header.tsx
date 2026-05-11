@@ -28,7 +28,7 @@ export function Header() {
     { href: '/sobre', label: 'Sobre' },
     { href: '/servicos', label: 'Serviços' },
     { href: '/projetos', label: 'Projetos' },
-    { href: '/contactos', label: 'Contactos' },
+  
   ];
 
   return (
@@ -70,7 +70,7 @@ export function Header() {
           <div className="hidden lg:flex items-center space-x-3 xl:space-x-4">
             <div className="flex items-center text-white text-sm">
               <Phone className="h-4 w-4 mr-1.5 text-primary" />
-              <span>+244 972 178 294</span>
+              <span>+244 926 135 112 / 921 094 757 </span>
             </div>
             <Link href="/login" className="no-underline">
               <Button variant="ghost" size="sm" className="text-white hover:text-primary border border-white/20 hover:border-primary transition-colors gap-1.5">
@@ -78,9 +78,12 @@ export function Header() {
                 Entrar
               </Button>
             </Link>
+
+            <Link href="/contactos" className="no-underline">
             <Button size="sm" className="whitespace-nowrap">
               Solicitar Contacto
             </Button>
+            </Link>
           </div>
 
           {/* Hamburger button (mobile) */}
@@ -124,7 +127,7 @@ export function Header() {
           <div className="pt-4 border-t border-dark-light space-y-3">
             <div className="flex items-center text-white text-sm">
               <Phone className="h-4 w-4 mr-2 text-primary" />
-              <span>+244 972 178 294</span>
+              <span>+244 926 135 112 / 921 094 757 </span>
             </div>
             <Link href="/login" onClick={() => setIsMenuOpen(false)} className="block no-underline">
               <Button variant="ghost" size="sm" className="w-full justify-start text-white hover:text-primary border border-white/20">

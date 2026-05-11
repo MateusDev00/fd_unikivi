@@ -34,9 +34,7 @@ export function Footer() {
           <div>
             <h3 className="font-serif text-xl mb-4 text-primary">Horário de Funcionamento</h3>
             <ul className="space-y-2 text-gray-300 text-sm">
-              <li>Segunda - Sexta: 08h00 - 17h00</li>
-              <li>Sábado: 08h00 - 12h00</li>
-              <li>Domingo: Fechado</li>
+              <li>Segunda - Sexta: 08h00 - 15h00</li>        
             </ul>
           </div>
 
@@ -52,14 +50,14 @@ export function Footer() {
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                <a href="mailto:fd@unikivi.ao" className="text-gray-300 hover:text-primary text-sm">
-                  fd@unikivi.ao
+                <a href="mailto:direito.unikivi@gmail.ao" className="text-gray-300 hover:text-primary text-sm">
+                  direito.unikivi@gmail.ao
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                <a href="tel:+244222000000" className="text-gray-300 hover:text-primary text-sm">
-                  +244 222 000 000
+                <a href="tel:+244926135112" className="text-gray-300 hover:text-primary text-sm">
+                  +244 926 135 112 / 921 094 757 
                 </a>
               </li>
             </ul>
