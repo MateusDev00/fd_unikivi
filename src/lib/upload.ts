@@ -1,26 +1,27 @@
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import crypto from 'crypto';
+import { supabase } from './supabase';
 
-export async function saveFile(file: File, folder: string, allowedMimes?: string[]): Promise<string> {
-  // Validação de tipo (se fornecida)
+export async function saveFile(
+  file: File,
+  folder: string,
+  allowedMimes?: string[]
+): Promise<string> {
   if (allowedMimes && !allowedMimes.includes(file.type)) {
     throw new Error(`Tipo de ficheiro não permitido: ${file.type}`);
   }
 
-  // Na Vercel, usa /tmp; em desenvolvimento, usa public/uploads
-  const baseDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), 'public');
-  const uploadDir = path.join(baseDir, 'uploads', folder);
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const filePath = `${folder}/${fileName}`;
 
-  await mkdir(uploadDir, { recursive: true });
+  const { error } = await supabase.storage
+    .from('imagens') // nome do bucket no Supabase
+    .upload(filePath, file, { upsert: true });
 
-  const ext = path.extname(file.name);
-  const filename = crypto.randomBytes(16).toString('hex') + ext;
-  const filepath = path.join(uploadDir, filename);
+  if (error) throw error;
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(filepath, buffer);
+  const { data: urlData } = supabase.storage
+    .from('imagens')
+    .getPublicUrl(filePath);
 
-  // Retorna o caminho acessível publicamente
-  return `/uploads/${folder}/${filename}`;
+  return urlData.publicUrl; // retorna a URL pública completa
 }

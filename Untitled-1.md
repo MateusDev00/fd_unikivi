@@ -1,0 +1,173 @@
+# File Tree: frontend
+
+**Generated:** 5/8/2026, 7:59:29 PM
+**Root Path:** `c:\Users\cicd-\Desktop\fd\frontend`
+
+```
+├── 📁 public
+│   └── 📁 images
+│       ├── 📁 hero
+│       │   ├── 🖼️ hero-1.png
+│       │   ├── 🖼️ hero-2.png
+│       │   ├── 🖼️ hero-3.png
+│       │   ├── 🖼️ hero-4.png
+│       │   └── 🖼️ hero-5.jpg
+│       ├── 🖼️ IMG-20260424-WA0013.jpg
+│       ├── 🖼️ foto5.png
+│       ├── 🖼️ foto6.png
+│       ├── 🖼️ hero-bg.jpg
+│       ├── 🖼️ logo.png
+│       └── 🖼️ tst.png
+├── 📁 src
+│   ├── 📁 app
+│   │   ├── 📁 api
+│   │   │   ├── 📁 auth
+│   │   │   │   ├── 📁 login
+│   │   │   │   │   └── 📄 route.ts
+│   │   │   │   ├── 📁 me
+│   │   │   │   │   └── 📄 route.ts
+│   │   │   │   └── 📁 register
+│   │   │   │       └── 📄 route.ts
+│   │   │   ├── 📁 documentos
+│   │   │   │   ├── 📁 [id]
+│   │   │   │   │   ├── 📁 download
+│   │   │   │   │   │   └── 📄 route.ts
+│   │   │   │   │   └── 📄 route.ts
+│   │   │   │   └── 📄 route.ts
+│   │   │   ├── 📁 eventos
+│   │   │   │   ├── 📁 [id]
+│   │   │   │   │   └── 📄 route.ts
+│   │   │   │   └── 📄 route.ts
+│   │   │   ├── 📁 publicacoes
+│   │   │   │   ├── 📁 [id]
+│   │   │   │   │   └── 📄 route.ts
+│   │   │   │   └── 📄 route.ts
+│   │   │   └── 📁 usuarios
+│   │   │       ├── 📁 [id]
+│   │   │       │   └── 📄 route.ts
+│   │   │       └── 📄 route.ts
+│   │   ├── 📁 contactos
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 login
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 modulos
+│   │   │   ├── 📁 admin
+│   │   │   │   ├── 📁 components
+│   │   │   │   │   └── 📁 admin
+│   │   │   │   │       ├── 📄 DataTable.tsx
+│   │   │   │   │       └── 📄 Sidebar.tsx
+│   │   │   │   ├── 📁 documentos
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 eventos
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 forms
+│   │   │   │   │   ├── 📄 DocumentForm.tsx
+│   │   │   │   │   ├── 📄 EventForm.tsx
+│   │   │   │   │   └── 📄 PublicationForm.tsx
+│   │   │   │   ├── 📁 publicacaoes
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 usuarios
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📄 layout.tsx
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📁 docentes
+│   │   │   │   ├── 📁 eventos
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 publicacoes
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📄 SidebarDocente.tsx
+│   │   │   │   ├── 📄 layout.tsx
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📁 documentos
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📁 estudante
+│   │   │   │   ├── 📁 documentos
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 eventos
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 publicacoes
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 vitrine
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📄 layout.tsx
+│   │   │   │   └── 📄 page.tsx
+│   │   │   └── 📁 orientacoes
+│   │   │       └── 📄 ~page.tsx
+│   │   ├── 📁 projetos
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 servicos
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 sobre
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 splash
+│   │   │   └── 📄 page.tsx
+│   │   ├── 🎨 globals.css
+│   │   ├── 📄 layout.tsx
+│   │   └── 📄 page.tsx
+│   ├── 📁 components
+│   │   ├── 📁 admin
+│   │   │   ├── 📁 forms
+│   │   │   │   ├── 📄 DocumentForm.tsx
+│   │   │   │   ├── 📄 EventForm.tsx
+│   │   │   │   ├── 📄 PublicationForm.tsx
+│   │   │   │   └── 📄 UsuarioForm.tsx
+│   │   │   └── 📄 DataTable.tsx
+│   │   ├── 📁 auth
+│   │   │   ├── 📄 ProtectedRoute.tsx
+│   │   │   └── 📄 RoleRoute.tsx
+│   │   ├── 📁 docente
+│   │   │   └── 📄 SidebarDocente.tsx
+│   │   ├── 📁 estudante
+│   │   │   └── 📄 HeaderEstudante.tsx
+│   │   ├── 📁 home
+│   │   │   ├── 📄 DocumentCard.tsx
+│   │   │   ├── 📄 EventCard.tsx
+│   │   │   └── 📄 PublicationCard.tsx
+│   │   ├── 📁 layout
+│   │   │   ├── 📄 Footer.tsx
+│   │   │   ├── 📄 Header.tsx
+│   │   │   └── 📄 ScrollToTop.tsx
+│   │   ├── 📁 sections
+│   │   │   ├── 📁 client
+│   │   │   │   ├── 📄 DocumentsClient.tsx
+│   │   │   │   ├── 📄 DocumentsSection.tsx
+│   │   │   │   ├── 📄 EventsClient.tsx
+│   │   │   │   ├── 📄 EventsSection.tsx
+│   │   │   │   └── 📄 PublicationsClient.tsx
+│   │   │   ├── 📄 DocumentsSection.tsx
+│   │   │   ├── 📄 EventsSection.tsx
+│   │   │   ├── 📄 Hero.tsx
+│   │   │   ├── 📄 NewsletterBanner.tsx
+│   │   │   ├── 📄 PublicationsSection.tsx
+│   │   │   └── 📄 ServicesSection.tsx
+│   │   └── 📁 ui
+│   │       ├── 📄 Button.tsx
+│   │       ├── 📄 FilterChips.tsx
+│   │       ├── 📄 LawLoader.tsx
+│   │       ├── 📄 Modal.tsx
+│   │       ├── 📄 Pagination.tsx
+│   │       └── 📄 SectionTitle.tsx
+│   ├── 📁 config
+│   │   └── 📄 index.ts
+│   ├── 📁 context
+│   │   └── 📄 AuthContext.tsx
+│   ├── 📁 lib
+│   │   ├── 📄 api.ts
+│   │   ├── 📄 auth.ts
+│   │   ├── 📄 db.ts
+│   │   ├── 📄 upload.ts
+│   │   ├── 📄 utils.ts
+│   │   └── 📄 validators.ts
+│   └── 📁 types
+│       ├── 📄 css.d.ts
+│       └── 📄 index.ts
+├── ⚙️ .gitignore
+├── ⚙️ package-lock.json
+├── ⚙️ package.json
+├── 📄 postcss.config.js
+├── 📄 tailwind.config.js
+└── ⚙️ tsconfig.json
+```
+
+---
+*Generated by FileTree Pro Extension*

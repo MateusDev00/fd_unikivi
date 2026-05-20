@@ -3,16 +3,19 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, CalendarDays, FolderOpen, GraduationCap, ChevronLeft, Menu, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard, FileText, Calendar, FolderOpen, GraduationCap, ChevronLeft, Menu, LogOut, Lock
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 
 const menuItems = [
   { href: '/modulos/docentes', label: 'Painel', icon: LayoutDashboard },
   { href: '/modulos/docentes/publicacoes', label: 'Publicações', icon: FileText },
-  { href: '/modulos/docentes/eventos', label: 'Eventos', icon: CalendarDays },
+  { href: '/modulos/docentes/eventos', label: 'Eventos', icon: Calendar },
   { href: '/modulos/docentes/documentos', label: 'Documentos', icon: FolderOpen },
   { href: '/modulos/docentes/orientacoes', label: 'Orientações', icon: GraduationCap },
+  { href: '/modulos/docentes/senha', label: 'Alterar Senha', icon: Lock },
 ];
 
 export function SidebarDocente() {
@@ -42,19 +45,22 @@ export function SidebarDocente() {
           <button onClick={() => setMobileOpen(false)} className="lg:hidden p-1 text-gray-400"><Menu className="h-5 w-5" /></button>
         </div>
         <nav className="flex-1 overflow-y-auto py-4 space-y-1 px-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                pathname === item.href ? 'bg-primary text-white' : 'text-gray-300 hover:bg-dark-light hover:text-white'
-              }`}
-            >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
-              {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                  pathname === item.href ? 'bg-primary text-white' : 'text-gray-300 hover:bg-dark-light hover:text-white'
+                }`}
+              >
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+              </Link>
+            );
+          })}
         </nav>
         <div className="border-t border-dark-light p-4">
           {!collapsed && user && <div className="text-sm text-gray-300 mb-2 truncate">{user.nome}</div>}

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { readFile } from 'fs/promises';
-import path from 'path';
 
 export async function GET(
   request: NextRequest,
@@ -18,12 +16,22 @@ export async function GET(
     }
 
     const doc = result.rows[0];
-    const filePath = path.join(process.cwd(), 'public', doc.caminho_servidor);
-    const fileBuffer = await readFile(filePath);
+    const caminho = doc.caminho_servidor; // já será uma URL pública do Supabase em produção
 
-    return new NextResponse(fileBuffer, {
+    // Redireciona para a URL pública (Supabase) ou serve arquivo local em dev
+    if (caminho.startsWith('http')) {
+      return NextResponse.redirect(caminho);
+    }
+
+    // Fallback local (apenas desenvolvimento)
+    const { readFile } = await import('fs/promises');
+    const path = await import('path');
+    const filePath = path.join(process.cwd(), 'public', caminho);
+    const buffer = await readFile(filePath);
+
+    return new NextResponse(buffer, {
       headers: {
-        'Content-Type': doc.tipo_mime,
+        'Content-Type': doc.tipo_mime || 'application/octet-stream',
         'Content-Disposition': `attachment; filename="${doc.nome_original}"`,
         'Content-Length': String(doc.tamanho_bytes),
       },

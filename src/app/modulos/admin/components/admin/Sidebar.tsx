@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Calendar, FolderOpen, ChevronLeft, Menu, LogOut, Users } from 'lucide-react';
+import {
+  LayoutDashboard, FileText, Calendar, FolderOpen, Users, ChevronLeft, Menu, LogOut, Lock
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 
@@ -12,7 +14,8 @@ const menuItems = [
   { href: '/modulos/admin/publicacaoes', label: 'Publicações', icon: FileText },
   { href: '/modulos/admin/eventos', label: 'Eventos', icon: Calendar },
   { href: '/modulos/admin/documentos', label: 'Documentos', icon: FolderOpen },
-  { href: '/modulos/admin/usuarios', label: 'Utilizadores', icon: Users }, // <-- NOVO
+  { href: '/modulos/admin/usuarios', label: 'Utilizadores', icon: Users },
+  { href: '/modulos/admin/senha', label: 'Alterar Senha', icon: Lock },
 ];
 
 export function Sidebar() {
@@ -64,21 +67,24 @@ export function Sidebar() {
 
         {/* Nav items */}
         <nav className="flex-1 overflow-y-auto py-4 space-y-1 px-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                pathname === item.href
-                  ? 'bg-primary text-white'
-                  : 'text-gray-300 hover:bg-dark-light hover:text-white'
-              }`}
-            >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
-              {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                  pathname === item.href
+                    ? 'bg-primary text-white'
+                    : 'text-gray-300 hover:bg-dark-light hover:text-white'
+                }`}
+              >
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* User info & logout */}
