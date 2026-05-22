@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
-
+import { Chatbot } from '@/components/chat/Chatbot';
 export const metadata: Metadata = {
   title: 'FD-UNIKIVI – Faculdade de Direito',
   description: 'Plataforma institucional da Faculdade de Direito da Universidade Kimpa Vita',
@@ -20,7 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans text-body bg-white antialiased overflow-x-hidden">
         <AuthProvider>
           {children}
+        <Chatbot />
         </AuthProvider>
+
       </body>
     </html>
   );

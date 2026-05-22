@@ -64,7 +64,7 @@ export default function SplashPage() {
           transition={{ delay: 0.4 }}
           className="font-serif text-4xl md:text-5xl text-heading mb-2"
         >
-          Bem‑vindo, <span className="text-primary">{user?.nome?.split(' ')[0]}</span>
+          Bem-vindo, <span className="text-primary">{user?.nome?.split(' ')[0]}</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}

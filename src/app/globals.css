@@ -2,65 +2,416 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =============================================
-   ESTILOS BASE PERSONALIZADOS
-   ============================================= */
+/* ============================================================
+   🌍 BASE GLOBAL
+   Minimalism + Soft Claymorphism + Premium Academic UI
+   ============================================================ */
+
 @layer base {
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-serif text-heading;
-  }
-  body {
-    @apply font-sans text-body bg-white antialiased;
-  }
-  /* Remove o sublinhado de todos os links, mesmo no hover */
-  a {
-    @apply no-underline;
-  }
-}
 
+  * {
+    @apply border-border;
+  }
 
-a:hover {
-  text-decoration: none !important;
-}
+  html {
 
-/* =============================================
-   CLASSES UTILITÁRIAS PERSONALIZADAS
-   ============================================= */
-@layer components {
-  .container-custom {
-    @apply container mx-auto px-4 sm:px-6 lg:px-8;
-  }
-  .overlay-dark {
-    @apply absolute inset-0 bg-dark/85;
-  }
-  .bg-dotted {
-    background-image: radial-gradient(circle, white 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-  .card-shadow {
-    @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
-  }
-}
-
-/* =============================================
-   UTILITÁRIOS ADICIONAIS
-   ============================================= */
-@layer utilities {
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .scroll-smooth {
     scroll-behavior: smooth;
+
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(140,0,52,0.06),
+        transparent 35%
+      ),
+      #ffffff;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+
+    @apply
+      font-sans
+      text-body
+      bg-white
+      antialiased;
+
+    min-height: 100vh;
+
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+
+    @apply
+      font-serif
+      text-heading;
+
+    font-weight: 700;
+
+    line-height: 1.1;
+
+    letter-spacing: -0.03em;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+  }
+
+  h2 {
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  p {
+    line-height: 1.8;
+  }
+
+  a {
+
+    @apply no-underline;
+
+    transition:
+      all .3s ease;
+  }
+
+  a:hover {
+
+    text-decoration: none !important;
+
+    opacity: .9;
+  }
+
+  button {
+
+    transition:
+      all .3s ease;
+  }
+
+  button:hover {
+
+    transform:
+      translateY(-2px);
+  }
+}
+
+/* ============================================================
+   🧩 COMPONENTES
+   ============================================================ */
+
+@layer components {
+
+  /* =========================================================
+     📦 CONTAINER
+     ========================================================= */
+
+  .container-custom {
+
+    @apply
+      container
+      mx-auto
+      px-4
+      sm:px-6
+      lg:px-8;
+  }
+
+  /* =========================================================
+     🌑 OVERLAY
+     ========================================================= */
+
+  .overlay-dark {
+
+    @apply
+      absolute
+      inset-0;
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(10,43,29,0.88),
+        rgba(25,95,65,0.72)
+      );
+  }
+
+  /* =========================================================
+     🌫️ ABSTRACT DOTS
+     ========================================================= */
+
+  .bg-dotted {
+
+    background-image:
+      radial-gradient(
+        rgba(255,255,255,0.18) 1px,
+        transparent 1px
+      );
+
+    background-size:
+      24px 24px;
+  }
+
+  /* =========================================================
+     🧊 PREMIUM CARD
+     ========================================================= */
+
+  .card-shadow {
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,0.96),
+        rgba(255,255,255,0.82)
+      );
+
+    border:
+      1px solid rgba(140,0,52,0.08);
+
+    backdrop-filter:
+      blur(18px);
+
+    box-shadow:
+      0 15px 45px rgba(140,0,52,0.10);
+
+    border-radius:
+      1.5rem;
+
+    transition:
+      all .4s ease;
+  }
+
+  .card-shadow:hover {
+
+    transform:
+      translateY(-8px);
+
+    box-shadow:
+      0 20px 55px rgba(140,0,52,0.16);
+  }
+
+  /* =========================================================
+     🌟 GLASS CARD
+     ========================================================= */
+
+  .glass-card {
+
+    background:
+      rgba(255,255,255,0.10);
+
+    border:
+      1px solid rgba(255,255,255,0.18);
+
+    backdrop-filter:
+      blur(20px);
+
+    box-shadow:
+      0 8px 32px rgba(31,38,135,0.08);
+
+    border-radius:
+      1.5rem;
+  }
+
+  /* =========================================================
+     🔴 BOTÃO PRINCIPAL
+     ========================================================= */
+
+  .btn-primary {
+
+    background:
+      linear-gradient(
+        135deg,
+        #8c0034 0%,
+        #c2185b 100%
+      );
+
+    color:
+      white;
+
+    border-radius:
+      999px;
+
+    padding:
+      .9rem 1.8rem;
+
+    font-weight:
+      600;
+
+    box-shadow:
+      0 12px 30px rgba(140,0,52,0.22);
+
+    transition:
+      all .35s ease;
+  }
+
+  .btn-primary:hover {
+
+    transform:
+      translateY(-3px);
+
+    box-shadow:
+      0 18px 45px rgba(140,0,52,0.30);
+  }
+
+  /* =========================================================
+     ⚪ BOTÃO SECUNDÁRIO
+     ========================================================= */
+
+  .btn-secondary {
+
+    background:
+      rgba(255,255,255,0.85);
+
+    color:
+      #8c0034;
+
+    border:
+      1px solid rgba(140,0,52,0.08);
+
+    backdrop-filter:
+      blur(14px);
+
+    border-radius:
+      999px;
+
+    padding:
+      .9rem 1.8rem;
+
+    transition:
+      all .35s ease;
+  }
+
+  .btn-secondary:hover {
+
+    background:
+      white;
+
+    transform:
+      translateY(-3px);
+  }
+
+  /* =========================================================
+     🚀 HERO SECTION
+     ========================================================= */
+
+  .hero-premium {
+
+    position:
+      relative;
+
+    overflow:
+      hidden;
+
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(140,0,52,0.10),
+        transparent 35%
+      ),
+
+      linear-gradient(
+        135deg,
+        #ffffff 0%,
+        #fdf7f9 55%,
+        #fffafd 100%
+      );
+  }
+
+  /* =========================================================
+     ✨ HERO GLOW
+     ========================================================= */
+
+  .hero-glow {
+
+    position:
+      absolute;
+
+    inset:
+      0;
+
+    background:
+      radial-gradient(
+        circle,
+        rgba(140,0,52,0.08),
+        transparent 60%
+      );
+
+    filter:
+      blur(90px);
+
+    z-index:
+      0;
+  }
+
+  /* =========================================================
+     🌈 GRADIENT TEXT
+     ========================================================= */
+
+  .text-gradient {
+
+    background:
+      linear-gradient(
+        135deg,
+        #8c0034,
+        #c2185b
+      );
+
+    -webkit-background-clip:
+      text;
+
+    -webkit-text-fill-color:
+      transparent;
+  }
+}
+
+/* ============================================================
+   🛠️ UTILITÁRIOS
+   ============================================================ */
+
+@layer utilities {
+
+  .line-clamp-2 {
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+
+    line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 3;
+
+    line-clamp: 3;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+  }
+
+  .scroll-smooth {
+
+    scroll-behavior: smooth;
+  }
+
+  .animate-delay-200 {
+    animation-delay: .2s;
+  }
+
+  .animate-delay-400 {
+    animation-delay: .4s;
+  }
+
+  .animate-delay-600 {
+    animation-delay: .6s;
   }
 }

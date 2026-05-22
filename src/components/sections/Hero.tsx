@@ -20,26 +20,30 @@ const SLIDES: Slide[] = [
     subtitulo: 'Formando juristas desde a tradição até à inovação.',
     breadcrumb: 'Home > Faculdade',
   },
+
   {
     imagem: '/images/hero/hero-2.png',
     titulo: 'Tribunal Simulado - Aprender na Prática',
     subtitulo: 'Simulações reais para uma advocacia de excelência.',
     breadcrumb: 'Home > Eventos > Tribunal Simulado',
   },
+
   {
-    imagem: '/images/hero/hero-3.png',
+    imagem: '/images/hero/hero-3.jpg',
     titulo: 'Investigação Científica e Publicações',
     subtitulo: 'Artigos, teses e revistas indexadas.',
     breadcrumb: 'Home > Investigação',
   },
+
   {
     imagem: '/images/hero/hero-4.png',
     titulo: 'Clínica Jurídica - Serviço à Comunidade',
     subtitulo: 'Apoio jurídico gratuito prestado pelos nossos estudantes.',
     breadcrumb: 'Home > Clínica Jurídica',
   },
+  
   {
-    imagem: '/images/hero/hero-5.jpg',
+    imagem: '/images/hero/hero-5.png',
     titulo: 'Parcerias Internacionais',
     subtitulo: 'Cooperação com faculdades de Direito de prestígio mundial.',
     breadcrumb: 'Home > Parcerias',
