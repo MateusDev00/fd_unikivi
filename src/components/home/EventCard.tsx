@@ -25,17 +25,19 @@ export function EventCard({ event }: EventCardProps) {
   };
 
   const isPast = new Date(event.data_evento) < new Date();
+  const temImagem = event.imagem_capa && event.imagem_capa.trim().length > 0;
 
   return (
     <>
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-        {event.imagem_capa && (
+        {temImagem && (
           <div className="relative h-40 w-full">
             <Image
-              src={event.imagem_capa}
+              src={event.imagem_capa!}   // 🟢 non-null assertion
               alt={event.titulo}
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             <div className="absolute top-4 right-4">
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -77,10 +79,10 @@ export function EventCard({ event }: EventCardProps) {
         onClose={() => setIsModalOpen(false)}
         title={event.titulo}
       >
-        {event.imagem_capa && (
+        {temImagem && (
           <div className="relative h-56 w-full mb-6 rounded-lg overflow-hidden">
             <Image
-              src={event.imagem_capa}
+              src={event.imagem_capa!}   // 🟢 non-null assertion
               alt={event.titulo}
               fill
               className="object-cover"

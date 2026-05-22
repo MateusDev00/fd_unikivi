@@ -21,16 +21,19 @@ export function PublicationCard({ publication }: PublicationCardProps) {
     });
   };
 
+  const temImagem = publication.imagem_capa && publication.imagem_capa.trim().length > 0;
+
   return (
     <>
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-        {publication.imagem_capa && (
+        {temImagem && (
           <div className="relative h-48 w-full">
             <Image
-              src={publication.imagem_capa}
+              src={publication.imagem_capa!}   // 🟢 non‑null assertion, garantida pela condição
               alt={publication.titulo}
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
@@ -43,16 +46,15 @@ export function PublicationCard({ publication }: PublicationCardProps) {
             {publication.titulo}
           </h3>
           <p className="text-body mb-4 line-clamp-3">
-            {/* Aqui podemos usar um resumo, mas como não temos campo resumo, usamos os primeiros caracteres */}
-            {publication.conteudo.replace(/<[^>]*>/g, '').substring(0, 120)}...
+            {publication.conteudo?.replace(/<[^>]*>/g, '').substring(0, 120)}...
           </p>
-        <button
+          <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center text-primary font-medium hover:underline mt-4"
+            className="inline-flex items-center text-primary font-medium hover:underline"
           >
-            Saber Mais
+            Ler mais
             <ArrowRight className="ml-2 h-4 w-4" />
-        </button>
+          </button>
         </div>
       </div>
 
@@ -61,10 +63,10 @@ export function PublicationCard({ publication }: PublicationCardProps) {
         onClose={() => setIsModalOpen(false)}
         title={publication.titulo}
       >
-        {publication.imagem_capa && (
+        {temImagem && (
           <div className="relative h-64 w-full mb-6 rounded-lg overflow-hidden">
             <Image
-              src={publication.imagem_capa}
+              src={publication.imagem_capa!}
               alt={publication.titulo}
               fill
               className="object-cover"

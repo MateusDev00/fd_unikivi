@@ -5,7 +5,6 @@ import { FileText, Download, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { API_BASE_URL } from '../../config/index';
 
 interface DocumentCardProps {
   document: Document;
@@ -23,7 +22,8 @@ export function DocumentCard({ document }: DocumentCardProps) {
   };
 
   const handleDownload = () => {
-    window.open(`${API_BASE_URL}/documentos/${document.id}/download`, '_blank');
+    // A rota /api/documentos/[id]/download trata de redirecionar para o Supabase ou servir localmente
+    window.open(`/api/documentos/${document.id}/download`, '_blank');
   };
 
   return (
@@ -46,7 +46,9 @@ export function DocumentCard({ document }: DocumentCardProps) {
           </div>
         </div>
         {document.descricao && (
-          <p className="text-body text-sm mt-4 line-clamp-3">{document.descricao}</p>
+          <p className="text-body text-sm mt-4 line-clamp-3">
+            {document.descricao}
+          </p>
         )}
         <div className="mt-4 flex items-center justify-end space-x-3">
           <button
@@ -56,14 +58,23 @@ export function DocumentCard({ document }: DocumentCardProps) {
           >
             <Eye className="h-5 w-5" />
           </button>
-          <Button variant="outline" size="sm" onClick={handleDownload} className="gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownload}
+            className="gap-1"
+          >
             <Download className="h-4 w-4" />
             Download
           </Button>
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={document.titulo}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={document.titulo}
+      >
         <div className="space-y-4">
           <div className="flex items-center text-sm text-body">
             <FileText className="h-5 w-5 mr-2 text-primary" />
