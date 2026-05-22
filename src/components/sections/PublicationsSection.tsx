@@ -1,45 +1,85 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
-import { PublicationCard } from '@/components/home/PublicationCard';
-import { SectionTitle } from '@/components/ui/SectionTitle';
+import { Publication } from '@/types';
+import { Calendar, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Modal } from '@/components/ui/Modal';
+import Image from 'next/image';
 
-export function PublicationsSection() {
-  const [publications, setPublications] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface PublicationCardProps {
+  publication: Publication;
+}
 
-  useEffect(() => {
-    api.getPublicacoes(1, 12)
-      .then(res => setPublications(res.data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+export function PublicationCard({ publication }: PublicationCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-AO', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const temImagem = publication.imagem_capa && publication.imagem_capa.trim().length > 0;
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <SectionTitle
-          subtitle="Fique por dentro"
-          title="Últimas Publicações"
-          description="Artigos, notícias e comunicados oficiais da Faculdade de Direito."
-        />
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded-2xl animate-pulse" />
-            ))}
-          </div>
-        ) : publications.length === 0 ? (
-          <p className="text-center text-body mt-8">Nenhuma publicação recente.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {publications.map(pub => (
-              <PublicationCard key={pub.id} publication={pub} />
-            ))}
+    <>
+      <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        {temImagem && (
+          <div className="relative h-48 w-full">
+            <Image
+              src={publication.imagem_capa!}   // 🟢 non‑null assertion, garantida pela condição
+              alt={publication.titulo}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
         )}
+        <div className="p-6">
+          <div className="flex items-center text-sm text-body mb-3">
+            <Calendar className="h-4 w-4 mr-1" />
+            {formatDate(publication.criado_em)}
+          </div>
+          <h3 className="font-serif text-xl text-heading mb-3 line-clamp-2">
+            {publication.titulo}
+          </h3>
+          <p className="text-body mb-4 line-clamp-3">
+            {publication.conteudo?.replace(/<[^>]*>/g, '').substring(0, 120)}...
+          </p>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center text-primary font-medium hover:underline"
+          >
+            Ler mais
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </button>
+        </div>
       </div>
-    </section>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={publication.titulo}
+      >
+        {temImagem && (
+          <div className="relative h-64 w-full mb-6 rounded-lg overflow-hidden">
+            <Image
+              src={publication.imagem_capa!}
+              alt={publication.titulo}
+              fill
+              className="object-cover"
+            />
+          </div>
+        )}
+        <div className="prose prose-headings:font-serif prose-headings:text-heading max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: publication.conteudo }} />
+        </div>
+        <p className="text-sm text-body mt-4">
+          Publicado em {formatDate(publication.criado_em)}
+        </p>
+      </Modal>
+    </>
   );
 }

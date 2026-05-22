@@ -1,45 +1,112 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
-import { DocumentCard } from '@/components/home/DocumentCard';
-import { SectionTitle } from '@/components/ui/SectionTitle';
+import { Document } from '@/types';
+import { FileText, Download, Eye } from 'lucide-react';
+import { useState } from 'react';
+import { Modal } from '@/components/ui/Modal';
+import { Button } from '@/components/ui/Button';
 
-export function DocumentsSection() {
-  const [documents, setDocuments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface DocumentCardProps {
+  document: Document;
+}
 
-  useEffect(() => {
-    api.getDocumentos(1, 12)
-      .then(res => setDocuments(res.data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+export function DocumentCard({ document }: DocumentCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    const kb = bytes / 1024;
+    if (kb < 1024) return kb.toFixed(1) + ' KB';
+    const mb = kb / 1024;
+    return mb.toFixed(1) + ' MB';
+  };
+
+  const handleDownload = () => {
+    // A rota /api/documentos/[id]/download trata de redirecionar para o Supabase ou servir localmente
+    window.open(`/api/documentos/${document.id}/download`, '_blank');
+  };
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <SectionTitle
-          subtitle="Vitrine de Conhecimento"
-          title="Documentos e Legislação"
-          description="Aceda a artigos científicos, pareceres jurídicos e diplomas legais."
-        />
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-40 bg-gray-200 rounded-2xl animate-pulse" />
-            ))}
+    <>
+      <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col h-full">
+        <div className="flex items-start space-x-4">
+          <div className="bg-primary-light p-3 rounded-xl">
+            <FileText className="h-6 w-6 text-primary" />
           </div>
-        ) : documents.length === 0 ? (
-          <p className="text-center text-body mt-8">Nenhum documento disponível.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {documents.map(doc => (
-              <DocumentCard key={doc.id} document={doc} />
-            ))}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-serif text-lg text-heading mb-1 line-clamp-2">
+              {document.titulo}
+            </h3>
+            <p className="text-sm text-body mb-1">{formatFileSize(document.tamanho_bytes)}</p>
+            {document.categoria && (
+              <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
+                {document.categoria}
+              </span>
+            )}
           </div>
+        </div>
+        {document.descricao && (
+          <p className="text-body text-sm mt-4 line-clamp-3">
+            {document.descricao}
+          </p>
         )}
+        <div className="mt-4 flex items-center justify-end space-x-3">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="text-primary hover:text-primary/80 p-1"
+            aria-label="Visualizar detalhes"
+          >
+            <Eye className="h-5 w-5" />
+          </button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownload}
+            className="gap-1"
+          >
+            <Download className="h-4 w-4" />
+            Download
+          </Button>
+        </div>
       </div>
-    </section>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={document.titulo}
+      >
+        <div className="space-y-4">
+          <div className="flex items-center text-sm text-body">
+            <FileText className="h-5 w-5 mr-2 text-primary" />
+            <span>{document.nome_original}</span>
+          </div>
+          <div className="flex items-center text-sm text-body">
+            <span className="font-medium mr-2">Tamanho:</span>
+            {formatFileSize(document.tamanho_bytes)}
+          </div>
+          {document.categoria && (
+            <div className="flex items-center text-sm text-body">
+              <span className="font-medium mr-2">Categoria:</span>
+              {document.categoria}
+            </div>
+          )}
+          {document.descricao && (
+            <div>
+              <h4 className="font-serif text-heading mb-2">Descrição</h4>
+              <p className="text-body">{document.descricao}</p>
+            </div>
+          )}
+          <div className="flex justify-end space-x-3 pt-4">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Fechar
+            </Button>
+            <Button onClick={handleDownload}>
+              <Download className="h-4 w-4 mr-2" />
+              Download
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
