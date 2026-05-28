@@ -5,10 +5,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'https://rpwuxmevphjlnuyzvbfq.supabase.co',
+        hostname: 'rpwuxmevphjlnuyzvbfq.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/imagens/**',
+        search: '',   // obrigatório para versões < 15.3.0
       },
     ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

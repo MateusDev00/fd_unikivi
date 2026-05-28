@@ -8,28 +8,55 @@ export async function GET(request: NextRequest) {
   const page = parseInt(searchParams.get('page') || '1');
   const limit = parseInt(searchParams.get('limit') || '10');
   const offset = (page - 1) * limit;
+  const estado = searchParams.get('estado') || '';
+  const search = searchParams.get('search') || '';
+  const dataInicio = searchParams.get('data_inicio') || '';
+  const dataFim = searchParams.get('data_fim') || '';
 
-  const count = await pool.query(
-    `SELECT COUNT(*) FROM publicacao WHERE eliminado_em IS NULL`
-  );
-  const total = parseInt(count.rows[0].count, 10);
+  let where = 'WHERE eliminado_em IS NULL';
+  const params: any[] = [];
+  let paramIndex = 1;
 
-  const result = await pool.query(
-    `SELECT * FROM publicacao WHERE eliminado_em IS NULL
-     ORDER BY criado_em DESC LIMIT $1 OFFSET $2`,
-    [limit, offset]
-  );
+  if (estado) {
+    where += ` AND estado = $${paramIndex}`;
+    params.push(estado);
+    paramIndex++;
+  }
+  if (search) {
+    where += ` AND titulo ILIKE $${paramIndex}`;
+    params.push(`%${search}%`);
+    paramIndex++;
+  }
+  if (dataInicio) {
+    where += ` AND criado_em >= $${paramIndex}`;
+    params.push(dataInicio);
+    paramIndex++;
+  }
+  if (dataFim) {
+    where += ` AND criado_em <= $${paramIndex}`;
+    params.push(dataFim);
+    paramIndex++;
+  }
 
-  return NextResponse.json({
-    data: result.rows,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  });
+  try {
+    const countQuery = `SELECT COUNT(*) FROM publicacao ${where}`;
+    const totalResult = await pool.query(countQuery, params);
+    const total = parseInt(totalResult.rows[0].count, 10);
+
+    const dataQuery = `SELECT * FROM publicacao ${where} ORDER BY criado_em DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(limit, offset);
+    const result = await pool.query(dataQuery, params);
+
+    return NextResponse.json({
+      data: result.rows,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    });
+  } catch (error: any) {
+    console.error('Erro GET publicações:', error);
+    return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
+  }
 }
+
 
 export async function POST(request: NextRequest) {
   const user = getAuthUser(request);

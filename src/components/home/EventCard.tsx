@@ -29,20 +29,28 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <>
+      {/* Card clicável (a imagem e o botão "Ver detalhes" abrem o modal) */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
         {temImagem && (
-          <div className="relative h-40 w-full">
+          <div
+            className="relative h-40 w-full cursor-pointer group"
+            onClick={() => setIsModalOpen(true)}
+          >
             <Image
-              src={event.imagem_capa!}   // 🟢 non-null assertion
+              src={event.imagem_capa!}
               alt={event.titulo}
               fill
-              className="object-cover"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
+            {/* Overlay suave na imagem */}
+            <div className="absolute inset-0 bg-dark/0 group-hover:bg-dark/10 transition-colors" />
             <div className="absolute top-4 right-4">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                isPast ? 'bg-gray-200 text-gray-700' : 'bg-primary text-white'
-              }`}>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  isPast ? 'bg-gray-200 text-gray-700' : 'bg-primary text-white'
+                }`}
+              >
                 {isPast ? 'Realizado' : 'Futuro'}
               </span>
             </div>
@@ -74,6 +82,7 @@ export function EventCard({ event }: EventCardProps) {
         </div>
       </div>
 
+      {/* Modal de detalhes – já tem o X de fechar no canto superior direito */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -82,7 +91,7 @@ export function EventCard({ event }: EventCardProps) {
         {temImagem && (
           <div className="relative h-56 w-full mb-6 rounded-lg overflow-hidden">
             <Image
-              src={event.imagem_capa!}   // 🟢 non-null assertion
+              src={event.imagem_capa!}
               alt={event.titulo}
               fill
               className="object-cover"

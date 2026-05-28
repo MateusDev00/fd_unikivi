@@ -23,13 +23,13 @@ export function Header() {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
   }, [isMenuOpen]);
 
-  const navLinks = [
-    { href: '/', label: 'Início' },
-    { href: '/sobre', label: 'Sobre' },
-    { href: '/servicos', label: 'Serviços' },
-    { href: '/projetos', label: 'Projetos' },
-  
-  ];
+const navLinks = [
+  { href: '/', label: 'Início' },
+  { href: '/sobre', label: 'Sobre' },
+  { href: '/servicos', label: 'Serviços' },
+  { href: '/noticias', label: 'Notícias' },   
+  { href: '/contactos', label: 'Contactos' },
+];
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-dark/95 backdrop-blur-md shadow-lg">

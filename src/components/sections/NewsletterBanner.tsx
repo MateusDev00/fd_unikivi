@@ -11,14 +11,6 @@ export function NewsletterBanner() {
             <h3 className="font-serif text-2xl text-white">Inscreva-se agora</h3>
           </div>
           <div className="flex w-full lg:w-auto">
-            <input
-              type="email"
-              placeholder="O seu email"
-              className="flex-1 lg:w-80 px-5 py-4 bg-dark-light text-white placeholder:text-gray-400 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button className="bg-primary text-white px-8 py-4 rounded-r-md font-medium hover:bg-primary/90 transition-colors">
-              Inscrever
-            </button>
           </div>
         </div>
       </div>

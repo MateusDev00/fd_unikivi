@@ -9,33 +9,55 @@ export async function GET(request: NextRequest) {
   const page = parseInt(searchParams.get('page') || '1');
   const limit = parseInt(searchParams.get('limit') || '10');
   const offset = (page - 1) * limit;
+  const estado = searchParams.get('estado') || '';
+  const search = searchParams.get('search') || '';
+  const dataInicio = searchParams.get('data_inicio') || '';
+  const dataFim = searchParams.get('data_fim') || '';
+
+  let where = 'WHERE eliminado_em IS NULL';
+  const params: any[] = [];
+  let paramIndex = 1;
+
+  if (estado) {
+    where += ` AND estado = $${paramIndex}`;
+    params.push(estado);
+    paramIndex++;
+  }
+  if (search) {
+    where += ` AND titulo ILIKE $${paramIndex}`;
+    params.push(`%${search}%`);
+    paramIndex++;
+  }
+  if (dataInicio) {
+    where += ` AND data_evento >= $${paramIndex}`;
+    params.push(dataInicio);
+    paramIndex++;
+  }
+  if (dataFim) {
+    where += ` AND data_evento <= $${paramIndex}`;
+    params.push(dataFim);
+    paramIndex++;
+  }
 
   try {
-    const count = await pool.query(
-      'SELECT COUNT(*) FROM evento WHERE eliminado_em IS NULL'
-    );
-    const total = parseInt(count.rows[0].count, 10);
+    const countQuery = `SELECT COUNT(*) FROM evento ${where}`;
+    const totalResult = await pool.query(countQuery, params);
+    const total = parseInt(totalResult.rows[0].count, 10);
 
-    const result = await pool.query(
-      `SELECT * FROM evento WHERE eliminado_em IS NULL
-       ORDER BY data_evento DESC LIMIT $1 OFFSET $2`,
-      [limit, offset]
-    );
+    const dataQuery = `SELECT * FROM evento ${where} ORDER BY data_evento DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(limit, offset);
+    const result = await pool.query(dataQuery, params);
 
     return NextResponse.json({
       data: result.rows,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
     });
   } catch (error: any) {
     console.error('Erro GET eventos:', error);
     return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
   }
 }
+
 
 // POST – criar evento (imagem obrigatória)
 export async function POST(request: NextRequest) {
