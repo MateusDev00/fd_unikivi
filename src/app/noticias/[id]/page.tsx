@@ -79,7 +79,7 @@ export default function DetalheNoticiaPage() {
       month: 'long',
       year: 'numeric',
     });
-
+  const [isImageOpen, setIsImageOpen] = useState(false);
   const temImagem = publicacao.imagem_capa && publicacao.imagem_capa.trim().length > 0;
 
   return (
@@ -101,7 +101,10 @@ export default function DetalheNoticiaPage() {
             <article className="lg:w-3/4">
               <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-8">
                 {temImagem && (
-                  <div className="relative h-[400px] w-full">
+                  <div
+                    className="relative h-[400px] w-full cursor-pointer group"
+                    onClick={() => setIsImageOpen(true)}
+                  >
                     <Image
                       src={publicacao.imagem_capa}
                       alt={publicacao.titulo}

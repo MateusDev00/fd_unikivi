@@ -4,6 +4,7 @@ import { Event } from '@/types';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { ImageModal } from '@/components/ui/ImageModal';
 import Image from 'next/image';
 
 interface EventCardProps {
@@ -12,6 +13,7 @@ interface EventCardProps {
 
 export function EventCard({ event }: EventCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-AO', {
@@ -29,12 +31,13 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <>
-      {/* Card clicável (a imagem e o botão "Ver detalhes" abrem o modal) */}
+      {/* Cartão do evento */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        {/* Imagem clicável → abre lightbox */}
         {temImagem && (
           <div
             className="relative h-40 w-full cursor-pointer group"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsImageOpen(true)}
           >
             <Image
               src={event.imagem_capa!}
@@ -43,8 +46,9 @@ export function EventCard({ event }: EventCardProps) {
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            {/* Overlay suave na imagem */}
+            {/* Overlay suave no hover */}
             <div className="absolute inset-0 bg-dark/0 group-hover:bg-dark/10 transition-colors" />
+            {/* Etiqueta de estado */}
             <div className="absolute top-4 right-4">
               <span
                 className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -56,6 +60,8 @@ export function EventCard({ event }: EventCardProps) {
             </div>
           </div>
         )}
+
+        {/* Corpo do cartão */}
         <div className="p-5">
           <h3 className="font-serif text-lg text-heading mb-2 line-clamp-2">
             {event.titulo}
@@ -72,6 +78,7 @@ export function EventCard({ event }: EventCardProps) {
               </div>
             )}
           </div>
+          {/* Botão que abre o modal de detalhes */}
           <button
             onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center text-primary font-medium text-sm hover:underline"
@@ -82,14 +89,30 @@ export function EventCard({ event }: EventCardProps) {
         </div>
       </div>
 
-      {/* Modal de detalhes – já tem o X de fechar no canto superior direito */}
+      {/* ⬇️ Lightbox da imagem (abre ao clicar na imagem do cartão) */}
+      {isImageOpen && temImagem && (
+        <ImageModal
+          src={event.imagem_capa!}
+          alt={event.titulo}
+          onClose={() => setIsImageOpen(false)}
+        />
+      )}
+
+      {/* Modal de detalhes (abre ao clicar em "Ver detalhes") */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={event.titulo}
       >
+        {/* Imagem dentro do modal também é clicável → abre lightbox */}
         {temImagem && (
-          <div className="relative h-56 w-full mb-6 rounded-lg overflow-hidden">
+          <div
+            className="relative h-56 w-full mb-6 rounded-lg overflow-hidden cursor-pointer"
+            onClick={() => {
+              setIsModalOpen(false);
+              setIsImageOpen(true);
+            }}
+          >
             <Image
               src={event.imagem_capa!}
               alt={event.titulo}
@@ -98,6 +121,8 @@ export function EventCard({ event }: EventCardProps) {
             />
           </div>
         )}
+
+        {/* Detalhes do evento */}
         <div className="space-y-3 mb-4">
           <div className="flex items-start">
             <Calendar className="h-5 w-5 mr-3 text-primary flex-shrink-0 mt-0.5" />
@@ -116,6 +141,8 @@ export function EventCard({ event }: EventCardProps) {
             </div>
           )}
         </div>
+
+        {/* Descrição do evento */}
         {event.descricao && (
           <div className="prose max-w-none">
             <p className="text-body">{event.descricao}</p>

@@ -4,6 +4,7 @@ import { Publication } from '@/types';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { ImageModal } from '@/components/ui/ImageModal';
 import Image from 'next/image';
 
 interface PublicationCardProps {
@@ -12,6 +13,7 @@ interface PublicationCardProps {
 
 export function PublicationCard({ publication }: PublicationCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-AO', {
@@ -25,18 +27,27 @@ export function PublicationCard({ publication }: PublicationCardProps) {
 
   return (
     <>
+      {/* Cartão principal */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        {/* Imagem clicável → abre lightbox */}
         {temImagem && (
-          <div className="relative h-48 w-full">
+          <div
+            className="relative h-48 w-full cursor-pointer group"
+            onClick={() => setIsImageOpen(true)}
+          >
             <Image
-              src={publication.imagem_capa!}   // 🟢 non‑null assertion, garantida pela condição
+              src={publication.imagem_capa!}
               alt={publication.titulo}
               fill
-              className="object-cover"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
+            {/* Overlay suave no hover */}
+            <div className="absolute inset-0 bg-dark/0 group-hover:bg-dark/10 transition-colors" />
           </div>
         )}
+
+        {/* Corpo do cartão */}
         <div className="p-6">
           <div className="flex items-center text-sm text-body mb-3">
             <Calendar className="h-4 w-4 mr-1" />
@@ -48,6 +59,7 @@ export function PublicationCard({ publication }: PublicationCardProps) {
           <p className="text-body mb-4 line-clamp-3">
             {publication.conteudo?.replace(/<[^>]*>/g, '').substring(0, 120)}...
           </p>
+          {/* Botão que abre o modal de detalhes */}
           <button
             onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center text-primary font-medium hover:underline"
@@ -58,13 +70,30 @@ export function PublicationCard({ publication }: PublicationCardProps) {
         </div>
       </div>
 
+      {/* Lightbox da imagem (abre ao clicar na imagem do cartão) */}
+      {isImageOpen && temImagem && (
+        <ImageModal
+          src={publication.imagem_capa!}
+          alt={publication.titulo}
+          onClose={() => setIsImageOpen(false)}
+        />
+      )}
+
+      {/* Modal de detalhes (abre ao clicar em "Ler mais") */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={publication.titulo}
       >
+        {/* Imagem dentro do modal também é clicável e abre o lightbox */}
         {temImagem && (
-          <div className="relative h-64 w-full mb-6 rounded-lg overflow-hidden">
+          <div
+            className="relative h-64 w-full mb-6 rounded-lg overflow-hidden cursor-pointer"
+            onClick={() => {
+              setIsModalOpen(false);
+              setIsImageOpen(true);
+            }}
+          >
             <Image
               src={publication.imagem_capa!}
               alt={publication.titulo}
@@ -73,6 +102,7 @@ export function PublicationCard({ publication }: PublicationCardProps) {
             />
           </div>
         )}
+        {/* Conteúdo textual da publicação */}
         <div className="prose prose-headings:font-serif prose-headings:text-heading max-w-none">
           <div dangerouslySetInnerHTML={{ __html: publication.conteudo }} />
         </div>
