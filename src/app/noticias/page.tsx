@@ -8,7 +8,6 @@ import { Publication } from '@/types';
 import { api } from '@/lib/api';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { PublicationCard } from '@/components/home/PublicationCard';
-import { SectionTitle } from '@/components/ui/SectionTitle';
 import { Calendar, ArrowRight, Clock, Search } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -16,26 +15,27 @@ import { motion } from 'framer-motion';
 const estadoOptions = [
   { label: 'Todas', value: '' },
   { label: 'Publicado', value: 'publicado' },
-  { label: 'Rascunho', value: 'rascunho' },
-  { label: 'Arquivado', value: 'arquivado' },
 ];
 
 export default function NoticiasPage() {
   const [publicacoes, setPublicacoes] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedEstado, setSelectedEstado] = useState('publicado'); // só as publicadas
+  const [error, setError] = useState<string | null>(null);
+  const [selectedEstado, setSelectedEstado] = useState('publicado');
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await api.getPublicacoes(1, 50, undefined, {
         estado: selectedEstado || undefined,
         search: searchTerm || undefined,
       });
       setPublicacoes(res.data);
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error('Erro ao carregar notícias:', err);
+      setError('Não foi possível carregar as notícias. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }
@@ -45,9 +45,30 @@ export default function NoticiasPage() {
     fetchData();
   }, [fetchData]);
 
-  // A mais recente (primeira do array)
   const principal = publicacoes.length > 0 ? publicacoes[0] : null;
   const outras = publicacoes.length > 1 ? publicacoes.slice(1) : [];
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <main className="pt-24 pb-16">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="font-serif text-3xl text-heading mb-4">Notícias</h1>
+            <p className="text-body mb-4">{error}</p>
+            <button
+              onClick={fetchData}
+              className="text-primary hover:underline"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        </main>
+        <Footer />
+        <ScrollToTop />
+      </>
+    );
+  }
 
   return (
     <>
