@@ -1,56 +1,84 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
-import { Calendar, Clock, ArrowLeft, Share2, Tag } from 'lucide-react';
+import { Calendar, Clock, ArrowLeft, Share2, Tag, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { LawLoader } from '@/components/ui/LawLoader';
 
-// Função para buscar a publicação pelo ID
-async function getPublicacao(id: string) {
-  try {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
-    const res = await fetch(`${apiBase}/publicacoes/${id}`, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.data;
-  } catch (error) {
-    console.error('Erro ao buscar publicação:', error);
-    return null;
+export default function DetalheNoticiaPage() {
+  const { id } = useParams<{ id: string }>();
+  const [publicacao, setPublicacao] = useState<any>(null);
+  const [recentes, setRecentes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+        const [pubRes, recRes] = await Promise.all([
+          fetch(`${apiBase}/publicacoes/${id}`),
+          fetch(`${apiBase}/publicacoes?page=1&limit=5&estado=publicado`),
+        ]);
+        if (!pubRes.ok) throw new Error('Publicação não encontrada');
+        const pubData = await pubRes.json();
+        setPublicacao(pubData.data);
+
+        if (recRes.ok) {
+          const recData = await recRes.json();
+          setRecentes(recData.data);
+        }
+      } catch (err: any) {
+        setError(err.message || 'Erro ao carregar a notícia.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  if (loading) return <LawLoader />;
+
+  if (error || !publicacao) {
+    return (
+      <>
+        <Header />
+        <main className="pt-24 pb-16">
+          <div className="container mx-auto px-4 text-center">
+            <AlertCircle className="h-12 w-12 text-primary/40 mx-auto mb-4" />
+            <h1 className="font-serif text-2xl text-heading mb-2">
+              {error || 'Notícia não encontrada'}
+            </h1>
+            <Link
+              href="/noticias"
+              className="text-primary hover:underline inline-flex items-center gap-1"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar para notícias
+            </Link>
+          </div>
+        </main>
+        <Footer />
+        <ScrollToTop />
+      </>
+    );
   }
-}
 
-// Função para buscar notícias recentes (para a barra lateral)
-async function getNoticiasRecentes() {
-  try {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
-    const res = await fetch(`${apiBase}/publicacoes?page=1&limit=5&estado=publicado`, { cache: 'no-store' });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.data;
-  } catch (error) {
-    console.error('Erro ao buscar notícias recentes:', error);
-    return [];
-  }
-}
-
-export default async function DetalheNoticiaPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const publicacao = await getPublicacao(id);
-  const recentes = await getNoticiasRecentes();
-
-  if (!publicacao) {
-    notFound();
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-AO', {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('pt-AO', {
       weekday: 'long',
       day: '2-digit',
       month: 'long',
       year: 'numeric',
     });
-  };
 
   const temImagem = publicacao.imagem_capa && publicacao.imagem_capa.trim().length > 0;
 
@@ -58,7 +86,6 @@ export default async function DetalheNoticiaPage({ params }: { params: Promise<{
     <>
       <Header />
       <main className="pt-24 pb-16">
-        {/* Breadcrumb e navegação */}
         <div className="container mx-auto px-4 mb-8">
           <Link
             href="/noticias"
@@ -71,9 +98,7 @@ export default async function DetalheNoticiaPage({ params }: { params: Promise<{
 
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Conteúdo principal */}
             <article className="lg:w-3/4">
-              {/* Hero da notícia */}
               <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-8">
                 {temImagem && (
                   <div className="relative h-[400px] w-full">
@@ -111,9 +136,7 @@ export default async function DetalheNoticiaPage({ params }: { params: Promise<{
                   </h1>
                   <div className="flex items-center gap-3 mb-8">
                     <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(window.location.href);
-                      }}
+                      onClick={() => navigator.clipboard.writeText(window.location.href)}
                       className="flex items-center gap-1 text-body hover:text-primary text-sm"
                     >
                       <Share2 className="h-4 w-4" />
@@ -133,7 +156,6 @@ export default async function DetalheNoticiaPage({ params }: { params: Promise<{
               </div>
             </article>
 
-            {/* Barra lateral – outras notícias */}
             <aside className="lg:w-1/4">
               <div className="bg-white rounded-2xl shadow-md p-6 sticky top-24">
                 <h3 className="font-serif text-lg text-heading mb-4">Notícias Recentes</h3>
