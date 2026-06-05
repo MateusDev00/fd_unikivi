@@ -5,18 +5,24 @@ import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
-import { Calendar, Clock, ArrowLeft, Share2, Tag, AlertCircle } from 'lucide-react';
+import {
+  Calendar, Clock, ArrowLeft, Share2, Tag, AlertCircle
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LawLoader } from '@/components/ui/LawLoader';
+import { ImageModal } from '@/components/ui/ImageModal';
 
 export default function DetalheNoticiaPage() {
   const { id } = useParams<{ id: string }>();
+
   const [publicacao, setPublicacao] = useState<any>(null);
   const [recentes, setRecentes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isImageOpen, setIsImageOpen] = useState(false);   // 👈 lightbox da imagem
 
+  // Buscar a publicação e as notícias recentes
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
@@ -45,8 +51,10 @@ export default function DetalheNoticiaPage() {
     fetchData();
   }, [id]);
 
+  // Estado de carregamento
   if (loading) return <LawLoader />;
 
+  // Estado de erro ou publicação não encontrada
   if (error || !publicacao) {
     return (
       <>
@@ -72,6 +80,7 @@ export default function DetalheNoticiaPage() {
     );
   }
 
+  // Formatação de data
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString('pt-AO', {
       weekday: 'long',
@@ -79,13 +88,14 @@ export default function DetalheNoticiaPage() {
       month: 'long',
       year: 'numeric',
     });
-  const [isImageOpen, setIsImageOpen] = useState(false);
+
   const temImagem = publicacao.imagem_capa && publicacao.imagem_capa.trim().length > 0;
 
   return (
     <>
       <Header />
       <main className="pt-24 pb-16">
+        {/* Navegação de retorno */}
         <div className="container mx-auto px-4 mb-8">
           <Link
             href="/noticias"
@@ -98,8 +108,10 @@ export default function DetalheNoticiaPage() {
 
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-8">
+            {/* ────── Conteúdo principal ────── */}
             <article className="lg:w-3/4">
               <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-8">
+                {/* Imagem de capa – clicável para abrir o lightbox */}
                 {temImagem && (
                   <div
                     className="relative h-[400px] w-full cursor-pointer group"
@@ -115,6 +127,8 @@ export default function DetalheNoticiaPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-dark/60 to-transparent" />
                   </div>
                 )}
+
+                {/* Metadados e conteúdo */}
                 <div className={`p-8 ${!temImagem ? 'pt-12' : ''}`}>
                   <div className="flex items-center gap-4 text-sm text-body mb-4">
                     <span className="flex items-center gap-1">
@@ -159,6 +173,7 @@ export default function DetalheNoticiaPage() {
               </div>
             </article>
 
+            {/* ────── Barra lateral – outras notícias ────── */}
             <aside className="lg:w-1/4">
               <div className="bg-white rounded-2xl shadow-md p-6 sticky top-24">
                 <h3 className="font-serif text-lg text-heading mb-4">Notícias Recentes</h3>
@@ -194,6 +209,15 @@ export default function DetalheNoticiaPage() {
       </main>
       <Footer />
       <ScrollToTop />
+
+      {/* ────── Lightbox da imagem ────── */}
+      {isImageOpen && publicacao.imagem_capa && (
+        <ImageModal
+          src={publicacao.imagem_capa}
+          alt={publicacao.titulo}
+          onClose={() => setIsImageOpen(false)}
+        />
+      )}
     </>
   );
 }
