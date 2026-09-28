@@ -30,26 +30,48 @@ export async function GET(request: NextRequest) {
   const tipo = searchParams.get('tipo') || '';
   const search = searchParams.get('search') || '';
 
-  let where = 'WHERE eliminado_em IS NULL';
+  let where = 'WHERE u.eliminado_em IS NULL';
   const params: any[] = [];
   let paramIndex = 1;
 
   if (tipo) {
-    where += ` AND tipo = $${paramIndex}`;
+    where += ` AND u.tipo = $${paramIndex}`;
     params.push(tipo);
     paramIndex++;
   }
   if (search) {
-    where += ` AND (nome ILIKE $${paramIndex} OR bilhete ILIKE $${paramIndex} OR email ILIKE $${paramIndex})`;
+    where += ` AND (u.nome ILIKE $${paramIndex} OR u.bilhete ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex})`;
     params.push(`%${search}%`);
     paramIndex++;
   }
 
-  const countQuery = `SELECT COUNT(*) FROM utilizador ${where}`;
+  const countQuery = `SELECT COUNT(*) FROM utilizador u ${where}`;
   const totalResult = await pool.query(countQuery, params);
   const total = parseInt(totalResult.rows[0].count, 10);
 
-  const dataQuery = `SELECT id, nome, bilhete, email, tipo, criado_em FROM utilizador ${where} ORDER BY criado_em DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  // Query principal com JOINs
+  const dataQuery = `
+    SELECT
+      u.id,
+      u.nome,
+      u.bilhete,
+      u.email,
+      u.tipo,
+      u.criado_em,
+      d.departamento,
+      d.titulacao,
+      d.area_especializacao,
+      e.numero_estudante,
+      e.curso,
+      e.ano_ingresso
+    FROM utilizador u
+    LEFT JOIN docente d ON d.id_utilizador = u.id
+    LEFT JOIN estudante e ON e.id_utilizador = u.id
+    ${where}
+    ORDER BY u.criado_em DESC
+    LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+  `;
+
   params.push(limit, offset);
   const result = await pool.query(dataQuery, params);
 

@@ -4,7 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, FileText, Calendar, FolderOpen, GraduationCap, ChevronLeft, Menu, LogOut, Lock
+  LayoutDashboard, FileText, Calendar, FolderOpen, GraduationCap, ChevronLeft, Menu, LogOut, Lock,
+  BookOpen,
+  ClipboardList
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
@@ -15,6 +17,8 @@ const menuItems = [
   { href: '/modulos/docentes/eventos', label: 'Eventos', icon: Calendar },
   { href: '/modulos/docentes/documentos', label: 'Documentos', icon: FolderOpen },
   { href: '/modulos/docentes/orientacoes', label: 'Orientações', icon: GraduationCap },
+  { href: '/modulos/docentes/tarefas', label: 'Minhas Tarefas', icon: ClipboardList },
+  { href: '/modulos/docentes/biografia', label: 'Minha Biografia', icon: BookOpen },
   { href: '/modulos/docentes/senha', label: 'Alterar Senha', icon: Lock },
 ];
 

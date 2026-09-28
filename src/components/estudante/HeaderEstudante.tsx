@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, BookOpen, CalendarDays, FolderOpen, LayoutDashboard, Menu, X, LogOut, GraduationCap } from 'lucide-react';
+import { Home, BookOpen, CalendarDays, FolderOpen, LayoutDashboard, Menu, X, LogOut, GraduationCap, ClipboardList } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 
@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/modulos/estudante/eventos', label: 'Eventos', icon: CalendarDays },
   { href: '/modulos/estudante/documentos', label: 'Documentos', icon: FolderOpen },
   { href: '/modulos/estudante/vitrine', label: 'Vitrine', icon: LayoutDashboard },
+  { href: '/modulos/estudante/tarefas', label: 'Tarefas', icon: ClipboardList }
 ];
 
 export function HeaderEstudante() {

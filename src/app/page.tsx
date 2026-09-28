@@ -2,8 +2,8 @@ import { Header } from '@/components/layout/Header';
 import { Hero } from '@/components/sections/Hero';
 import { ServicesSection } from '@/components/sections/ServicesSection';
 import PublicationsSection from '@/components/sections/PublicationsSection';
-import {EventsSection} from '@/components/sections/EventsSection';
-import { NewsletterBanner } from '@/components/sections/NewsletterBanner';
+import EventsSection from '@/components/sections/EventsSection';
+import DocumentsSection from '@/components/sections/DocumentsSection';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
 
@@ -16,7 +16,8 @@ export default function HomePage() {
         <ServicesSection />
         <PublicationsSection />
         <EventsSection />
-        <NewsletterBanner />
+        <DocumentsSection />
+        
       </main>
       <Footer />
       <ScrollToTop />

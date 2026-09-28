@@ -50,7 +50,8 @@ function CodigoJuridico() {
   const linhas = [
     'import { Justica } from "@unikivi/fd";',
     'const sentenca = await analisar(processo);',
-    'if (culpa) condenar(proporcionalidade);',
+    'if (culpado) { (condenar)};',
+    'else {(inocentar)};',
     'return new Direito("Angola");',
   ];
   const [linhaAtiva, setLinhaAtiva] = useState(0);
@@ -87,7 +88,7 @@ export function LawLoader() {
         <SimboloJuridico />
         <div className="text-center">
           <h2 className="font-serif text-3xl font-bold text-heading tracking-wide">FD<span className="text-primary">UNIKIVI</span></h2>
-          <p className="mt-1 text-sm text-body">Preparando o Direito</p>
+          <p className="mt-1 text-sm text-body">Preparando</p>
         </div>
         <BarraProgresso />
         <CodigoJuridico />

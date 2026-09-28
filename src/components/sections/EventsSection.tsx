@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { EventCard } from '@/components/home/EventCard';
+import EventCard from '@/components/home/EventCard';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 
-export function EventsSection() {
+export default function EventsSection() {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +16,32 @@ export function EventsSection() {
       .finally(() => setLoading(false));
   }, []);
 
+  if (loading) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <SectionTitle subtitle="Agenda" title="Próximos Eventos" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-48 bg-gray-200 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (events.length === 0) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <SectionTitle subtitle="Agenda" title="Próximos Eventos" />
+          <p className="text-center text-body mt-8">Nenhum evento recente.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -24,21 +50,11 @@ export function EventsSection() {
           title="Próximos Eventos"
           description="Participe nos nossos seminários, conferências e workshops."
         />
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded-2xl animate-pulse" />
-            ))}
-          </div>
-        ) : events.length === 0 ? (
-          <p className="text-center text-body mt-8">Nenhum evento recente.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {events.map(event => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+          {events.map(event => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
       </div>
     </section>
   );
