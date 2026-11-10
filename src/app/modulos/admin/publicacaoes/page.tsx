@@ -7,11 +7,20 @@ import { Publication } from '@/types';
 import { DataTable } from '../components/admin/DataTable';
 import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
-import { Plus, FileText, AlertCircle, Search, Calendar } from 'lucide-react';
+import { 
+  Plus, 
+  FileText, 
+  AlertCircle, 
+  Search, 
+  Calendar, 
+  Download, 
+  FileDown 
+} from 'lucide-react';
 import { PublicationForm } from '../forms/PublicationForm';
 import { LawLoader } from '@/components/ui/LawLoader';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { motion, AnimatePresence } from 'framer-motion';
+import { downloadCSV, downloadPDF } from '@/lib/download';
 
 const estadoOptions = [
   { label: 'Todos', value: '' },
@@ -39,12 +48,12 @@ export default function PublicacoesPage() {
     if (!token) return;
     setLoading(true);
     try {
-    const res = await api.getPublicacoes(page, 10, token, {
-      estado: selectedEstado || '',
-      search: searchTerm || '',
-      dataInicio: dataInicio || '',
-      dataFim: dataFim || '',
-    });
+      const res = await api.getPublicacoes(page, 10, token, {
+        estado: selectedEstado || '',
+        search: searchTerm || '',
+        dataInicio: dataInicio || '',
+        dataFim: dataFim || '',
+      });
       setPublicacoes(res.data);
       setMeta(res.meta);
     } catch (err: any) {
@@ -92,6 +101,44 @@ export default function PublicacoesPage() {
     }
   };
 
+  // ---- FUNÇÕES DE EXPORTAÇÃO ----
+  const buildQueryParams = () => {
+    const params = new URLSearchParams();
+    if (selectedEstado) params.append('estado', selectedEstado);
+    if (searchTerm) params.append('search', searchTerm);
+    if (dataInicio) params.append('data_inicio', dataInicio);
+    if (dataFim) params.append('data_fim', dataFim);
+    return params.toString();
+  };
+
+  const handleExportCSV = async () => {
+    if (!token) return;
+    try {
+      const query = buildQueryParams();
+      await downloadCSV(
+        `/api/relatorios/publicacoes?${query}`,
+        token,
+        'relatorio_publicacoes.csv'
+      );
+    } catch (err: any) {
+      alert(err.message || 'Erro ao exportar CSV');
+    }
+  };
+
+  const handleExportPDF = async () => {
+    if (!token) return;
+    try {
+      const query = buildQueryParams();
+      await downloadPDF(
+        `/api/relatorios/publicacoes/pdf?${query}`,
+        token,
+        'relatorio_publicacoes.pdf'
+      );
+    } catch (err: any) {
+      alert(err.message || 'Erro ao exportar PDF');
+    }
+  };
+
   const columns = [
     {
       key: 'titulo',
@@ -105,7 +152,7 @@ export default function PublicacoesPage() {
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
             item.estado === 'publicado'
-              ? 'bg-green-100 text-green-800'
+              ? 'bg-primary/10 text-primary'
               : item.estado === 'rascunho'
               ? 'bg-gray-100 text-gray-800'
               : 'bg-yellow-100 text-yellow-800'
@@ -157,20 +204,33 @@ export default function PublicacoesPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* Cabeçalho e Botões de Ação */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="font-serif text-3xl text-heading">Publicações</h1>
           <p className="text-body mt-1">{meta.total} registos</p>
         </div>
-        <Button
-          onClick={() => {
-            setEditing(null);
-            setShowForm(true);
-          }}
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" /> Nova Publicação
-        </Button>
+        
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Botões de Exportação */}
+          <Button variant="outline" onClick={handleExportCSV} className="gap-2">
+            <Download className="h-4 w-4" /> CSV
+          </Button>
+          <Button variant="outline" onClick={handleExportPDF} className="gap-2">
+            <FileDown className="h-4 w-4" /> PDF
+          </Button>
+          
+          {/* Botão de Criar */}
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setShowForm(true);
+            }}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" /> Nova Publicação
+          </Button>
+        </div>
       </div>
 
       {/* Filtros */}

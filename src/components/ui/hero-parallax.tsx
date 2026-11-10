@@ -1,13 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
+import Link from 'next/link';
 import {
   motion,
   useScroll,
   useTransform,
   useSpring,
-  MotionValue,
 } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 export function HeroParallax({
   products,
@@ -18,157 +19,160 @@ export function HeroParallax({
     thumbnail: string;
   }[];
 }) {
-  const firstRow = products.slice(0, 5);
-  const secondRow = products.slice(5, 10);
-  const thirdRow = products.slice(10, 15);
-  const ref = React.useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
   });
 
-  const springConfig = { stiffness: 200, damping: 25, bounce: 80 };
+  const springConfig = { stiffness: 150, damping: 30 };
 
-  // Movimentos horizontais
-  const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, 1200]),
+  // Movimento horizontal suave (sem rotação, sem 3D)
+  const translateXLeft = useSpring(
+    useTransform(scrollYProgress, [0, 1], [0, -400]),
     springConfig
   );
-  const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, -1200]),
-    springConfig
-  );
-
-  // Rotação oblíqua inicial → endireita ao rolar
-  const rotateX = useSpring(
-    useTransform(scrollYProgress, [0, 0.25], [18, 0]),
-    springConfig
-  );
-  const rotateZ = useSpring(
-    useTransform(scrollYProgress, [0, 0.25], [12, 0]),
+  const translateXRight = useSpring(
+    useTransform(scrollYProgress, [0, 1], [0, 400]),
     springConfig
   );
 
-  // Opacidade inicial mais baixa → aumenta ao rolar
-  const opacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [0.35, 1]),
-    springConfig
-  );
-
-  // Translação vertical
-  const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.3], [-400, 200]),
-    springConfig
-  );
+  const firstRow = products.slice(0, 5);
+  const secondRow = products.slice(5, 10);
+  const thirdRow = products.slice(10, 15);
 
   return (
-    <div
+    <section
       ref={ref}
-      className="h-[350vh] relative overflow-hidden antialiased bg-gradient-to-b from-white via-[#fdf7f9] to-white"
+      className="relative bg-white overflow-hidden min-h-[90vh] flex flex-col"
     >
-      {/* Header sticky com glassmorphism */}
-      <div className="sticky top-0 z-20 pt-24 pb-6 px-4 sm:px-8 lg:px-16">
-        <div className="max-w-4xl bg-black/50 rounded-3xl p-8 md:p-12 backdrop-blur-lg border border-white/10 shadow-glass">
-          <Header />
+      {/* ============ TEXTO (parte superior) ============ */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12 lg:pt-40">
+        <div className="max-w-3xl">
+          {/* Etiqueta superior */}
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-block px-4 py-1.5 mb-6 rounded-full bg-primary/10 text-primary text-xs font-medium uppercase tracking-wider"
+          >
+            Bem‑vindo à FD‑UNIKIVI
+          </motion.span>
+
+          {/* Título principal */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary leading-[1.1] tracking-tight"
+          >
+            Faculdade de Direito
+            <br />
+            <span className="text-dark/90">Universidade Kimpa Vita</span>
+          </motion.h1>
+
+          {/* Subtítulo */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="mt-6 text-base md:text-lg text-dark/70 max-w-2xl leading-relaxed"
+          >
+            Excelência na formação jurídica, investigação científica e extensão à
+            comunidade. Formamos juristas com rigor, ética e compromisso social.
+          </motion.p>
+
+          {/* Botões */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+            className="mt-8 flex flex-wrap gap-4"
+          >
+            <Link
+              href="/sobre"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+            >
+              Conhecer a Faculdade
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/servicos"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-primary/30 text-primary font-medium hover:bg-primary/5 transition-colors"
+            >
+              Nossos Serviços
+            </Link>
+          </motion.div>
         </div>
       </div>
 
-      {/* Conteúdo em parallax com inclinação */}
-      <motion.div
-        style={{
-          rotateX,
-          rotateZ,
-          translateY,
-          opacity,
-          transformStyle: 'preserve-3d',
-        }}
-        className="absolute inset-x-0 top-0 z-10 flex flex-col gap-10 py-16"
-      >
-        {/* Linha 1 – direita */}
-        <motion.div style={{ x: translateX }} className="flex gap-6">
-          {firstRow.map((product) => (
-            <ProductCard product={product} translate={translateX} key={product.title} />
+      {/* ============ IMAGENS (faixa inferior) ============ */}
+      <div className="relative mt-auto pb-12 overflow-hidden">
+        {/* Gradientes laterais para suavizar a entrada/saída das imagens */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        {/* Linha 1 – move para a esquerda */}
+        <motion.div
+          style={{ x: translateXLeft }}
+          className="flex gap-5 mb-5"
+        >
+          {[...firstRow, ...firstRow].map((product, index) => (
+            <ImageTile key={`row1-${index}`} product={product} />
           ))}
         </motion.div>
 
-        {/* Linha 2 – esquerda */}
-        <motion.div style={{ x: translateXReverse }} className="flex gap-6">
-          {secondRow.map((product) => (
-            <ProductCard product={product} translate={translateXReverse} key={product.title} />
+        {/* Linha 2 – move para a direita */}
+        <motion.div
+          style={{ x: translateXRight }}
+          className="flex gap-5 mb-5"
+        >
+          {[...secondRow, ...secondRow].map((product, index) => (
+            <ImageTile key={`row2-${index}`} product={product} />
           ))}
         </motion.div>
 
-        {/* Linha 3 – direita */}
-        <motion.div style={{ x: translateX }} className="flex gap-6">
-          {thirdRow.map((product) => (
-            <ProductCard product={product} translate={translateX} key={product.title} />
+        {/* Linha 3 – move para a esquerda */}
+        <motion.div
+          style={{ x: translateXLeft }}
+          className="flex gap-5"
+        >
+          {[...thirdRow, ...thirdRow].map((product, index) => (
+            <ImageTile key={`row3-${index}`} product={product} />
           ))}
         </motion.div>
-
-        {/* Linhas extras para preencher a altura */}
-        <motion.div style={{ x: translateXReverse }} className="flex gap-6">
-          {secondRow.map((product) => (
-            <ProductCard product={product} translate={translateXReverse} key={`dup-${product.title}`} />
-          ))}
-        </motion.div>
-      </motion.div>
-    </div>
+      </div>
+    </section>
   );
 }
 
-export function Header() {
-  return (
-    <div>
-      <motion.h1
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
-      >
-        Faculdade de Direito <br />
-        <span className="text-white/90">Universidade Kimpa Vita</span>
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-        className="max-w-2xl mt-6 text-sm md:text-xl text-white/70"
-      >
-        Excelência na formação jurídica, investigação científica e extensão à comunidade.
-      </motion.p>
-    </div>
-  );
-}
-
-export function ProductCard({
+function ImageTile({
   product,
-  translate,
 }: {
   product: {
     title: string;
     link: string;
     thumbnail: string;
   };
-  translate: MotionValue<number>;
 }) {
   return (
-    <motion.div
-      style={{ x: translate }}
-      whileHover={{ y: -20 }}
-      className="group/product h-64 w-80 md:h-80 md:w-96 relative shrink-0 rounded-xl overflow-hidden shadow-card border border-primary/20"
+    <Link
+      href={product.link}
+      className="group relative shrink-0 w-64 h-40 md:w-72 md:h-44 rounded-2xl overflow-hidden shadow-md border border-primary/10 hover:shadow-xl transition-all duration-300"
     >
-      <a href={product.link} className="block group-hover/product:shadow-2xl">
-        <img
-          src={product.thumbnail}
-          alt={product.title}
-          className="object-cover object-center absolute inset-0 h-full w-full"
-        />
-      </a>
-      <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-50 bg-primary/40 transition-opacity pointer-events-none"></div>
-      <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-white font-serif text-xl transition-opacity drop-shadow-lg">
-        {product.title}
-      </h2>
-    </motion.div>
+      <img
+        src={product.thumbnail}
+        alt={product.title}
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+      {/* Overlay suave no hover com o título */}
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <p className="text-white text-sm font-medium line-clamp-2 drop-shadow">
+          {product.title}
+        </p>
+      </div>
+    </Link>
   );
 }

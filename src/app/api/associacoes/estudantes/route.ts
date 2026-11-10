@@ -4,33 +4,62 @@ import { getAuthUser } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   const user = getAuthUser(request);
-  if (!user || user.tipo !== 'admin') return NextResponse.json({ message: 'Acesso negado' }, { status: 403 });
+  if (!user || user.tipo !== 'admin') {
+    return NextResponse.json({ message: 'Acesso negado' }, { status: 403 });
+  }
 
-  const result = await pool.query(`
-    SELECT es.id, es.id_estudante, u.nome as nome_estudante,
-           es.id_disciplina, d.nome as nome_disciplina,
-           es.id_turma, t.nome as nome_turma,
-           es.ano_frequencia, es.semestre, es.estado
-    FROM estudante_disciplina es
-    LEFT JOIN utilizador u ON u.id = es.id_estudante
-    LEFT JOIN disciplina d ON d.id = es.id_disciplina
-    LEFT JOIN turma t ON t.id = es.id_turma
-    WHERE es.eliminado_em IS NULL
-  `);
-
-  return NextResponse.json({ data: result.rows });
+  try {
+    const result = await pool.query(`
+      SELECT ed.id,
+             ed.id_estudante,
+             u.nome AS nome_estudante,
+             ed.id_disciplina,
+             d.nome AS nome_disciplina,
+             ed.id_turma,
+             t.nome AS nome_turma,
+             ed.ano_frequencia,
+             ed.semestre,
+             ed.estado
+      FROM estudante_disciplina ed
+      LEFT JOIN utilizador u ON u.id = ed.id_estudante
+      LEFT JOIN disciplina d ON d.id = ed.id_disciplina
+      LEFT JOIN turma t ON t.id = ed.id_turma
+      WHERE ed.eliminado_em IS NULL
+      ORDER BY u.nome ASC
+    `);
+    return NextResponse.json({ data: result.rows });
+  } catch (error: any) {
+    console.error('Erro GET associações estudantes:', error);
+    return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
   const user = getAuthUser(request);
-  if (!user || user.tipo !== 'admin') return NextResponse.json({ message: 'Acesso negado' }, { status: 403 });
+  if (!user || user.tipo !== 'admin') {
+    return NextResponse.json({ message: 'Acesso negado' }, { status: 403 });
+  }
 
-  const { id_estudante, id_disciplina, id_turma, ano_frequencia, semestre } = await request.json();
+  const { id_estudante, id_disciplina, id_turma, ano_frequencia, semestre } =
+    await request.json();
 
-  const result = await pool.query(
-    `INSERT INTO estudante_disciplina (id_estudante, id_disciplina, id_turma, ano_frequencia, semestre, estado)
-     VALUES ($1, $2, $3, $4, $5, 'inscrito') RETURNING *`,
-    [id_estudante, id_disciplina, id_turma, ano_frequencia, semestre]
-  );
-  return NextResponse.json({ success: true, data: result.rows[0] }, { status: 201 });
+  try {
+    const result = await pool.query(
+      `INSERT INTO estudante_disciplina
+        (id_estudante, id_disciplina, id_turma, ano_frequencia, semestre, estado)
+       VALUES ($1, $2, $3, $4, $5, 'inscrito') RETURNING *`,
+      [id_estudante, id_disciplina, id_turma, ano_frequencia, semestre]
+    );
+    return NextResponse.json({ success: true, data: result.rows[0] }, { status: 201 });
+  } catch (error: any) {
+    // 🟢 A tipagem 'any' resolve o erro 18046
+    if (error.code === '23505') {
+      return NextResponse.json(
+        { message: 'Este estudante já está associado a esta turma e disciplina.' },
+        { status: 409 }
+      );
+    }
+    console.error('Erro POST associação estudante:', error);
+    return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
+  }
 }

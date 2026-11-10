@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
-// GET público – retorna biografia e dados profissionais
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  const { id } = await params;   // ⬅️ apenas nesta rota dinâmica!
 
   try {
     const result = await pool.query(
@@ -31,7 +30,6 @@ export async function GET(
   }
 }
 
-// PUT – protegido (apenas o próprio docente ou admin)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -43,7 +41,6 @@ export async function PUT(
 
   const { id } = await params;
 
-  // Apenas o próprio docente ou admin pode editar
   if (userAuth.tipo !== 'admin' && userAuth.id !== Number(id)) {
     return NextResponse.json({ message: 'Não autorizado' }, { status: 403 });
   }
@@ -51,7 +48,6 @@ export async function PUT(
   const { biografia, foto, website, redes_sociais } = await request.json();
 
   try {
-    // Verificar se o docente existe
     const exists = await pool.query(
       `SELECT 1 FROM docente WHERE id_utilizador = $1`,
       [id]

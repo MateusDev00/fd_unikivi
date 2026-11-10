@@ -16,8 +16,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     );
     const updated = await pool.query('SELECT * FROM docente_disciplina WHERE id = $1', [id]);
     return NextResponse.json({ success: true, data: updated.rows[0] });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error('Erro PUT associação docente:', error);
     return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
   }
 }
@@ -28,10 +28,14 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   const { id } = await params;
   try {
-    await pool.query('DELETE FROM docente_disciplina WHERE id = $1', [id]);
-    return NextResponse.json({ success: true, message: 'Associação removida' });
-  } catch (error) {
-    console.error(error);
+    // 🟢 SOFT DELETE: Apenas marca como eliminado para manter o histórico
+    await pool.query(
+      'UPDATE docente_disciplina SET eliminado_em = CURRENT_TIMESTAMP WHERE id = $1',
+      [id]
+    );
+    return NextResponse.json({ success: true, message: 'Associação removida com sucesso' });
+  } catch (error: any) {
+    console.error('Erro DELETE associação docente:', error);
     return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
   }
 }
