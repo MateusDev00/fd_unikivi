@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { DocumentCard } from '@/components/home/DocumentCard';
+import DocumentCard from '@/components/home/DocumentCard';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 
 export default function DocumentsSection() {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { DocumentCard } from '@/components/home/DocumentCard';
+import DocumentCard from '@/components/home/DocumentCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { Document, PaginatedResponse } from '@/types';

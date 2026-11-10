@@ -10,7 +10,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
-import { PublicationCard } from '@/components/home/PublicationCard';
+import PublicationCard from '@/components/home/PublicationCard';
 
 export default function PublicationsSection() {
   const [publications, setPublications] = useState<any[]>([]);

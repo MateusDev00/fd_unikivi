@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PublicationCard } from '@/components/home/PublicationCard';
+import PublicationCard from '@/components/home/PublicationCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { Publication, PaginatedResponse } from '@/types';

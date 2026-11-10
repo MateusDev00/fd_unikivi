@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { EventCard } from '@/components/home/EventCard';
+import EventCard from '@/components/home/EventCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { Event, PaginatedResponse } from '@/types';

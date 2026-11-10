@@ -10,48 +10,25 @@ function walkDir(dir, callback) {
 }
 
 const srcDir = path.resolve(process.cwd(), 'src');
-console.log('🚀 A procurar imports nomeados incorretos...\n');
-
 let fixedCount = 0;
+
+console.log('🚀 A procurar e corrigir TODOS os imports dos Cards...\n');
 
 walkDir(srcDir, (filePath) => {
   if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
     let content = fs.readFileSync(filePath, 'utf8');
-    let originalContent = content;
+    let original = content;
 
-    // Corrigir EventCard
-    content = content.replace(
-      /import\s*\{\s*EventCard\s*\}\s*from\s*['"]@\/components\/home\/EventCard['"];?/g,
-      "import EventCard from '@/components/home/EventCard';"
-    );
+    // Regex global que apanha qualquer caminho (@/ ou relativo) e variações de espaços
+    const eventCardRegex = /import\s*\{\s*EventCard\s*\}\s*from\s*(['"][^'"]*home\/EventCard['"]);?/g;
+    const pubCardRegex = /import\s*\{\s*PublicationCard\s*\}\s*from\s*(['"][^'"]*home\/PublicationCard['"]);?/g;
+    const docCardRegex = /import\s*\{\s*DocumentCard\s*\}\s*from\s*(['"][^'"]*home\/DocumentCard['"]);?/g;
 
-    // Corrigir PublicationCard
-    content = content.replace(
-      /import\s*\{\s*PublicationCard\s*\}\s*from\s*['"]@\/components\/home\/PublicationCard['"];?/g,
-      "import PublicationCard from '@/components/home/PublicationCard';"
-    );
+    content = content.replace(eventCardRegex, 'import EventCard from $1;');
+    content = content.replace(pubCardRegex, 'import PublicationCard from $1;');
+    content = content.replace(docCardRegex, 'import DocumentCard from $1;');
 
-    // Corrigir DocumentCard
-    content = content.replace(
-      /import\s*\{\s*DocumentCard\s*\}\s*from\s*['"]@\/components\/home\/DocumentCard['"];?/g,
-      "import DocumentCard from '@/components/home/DocumentCard';"
-    );
-
-    // Suporte para caminhos relativos (ex: ../home/EventCard)
-    content = content.replace(
-      /import\s*\{\s*EventCard\s*\}\s*from\s*['"](\.\.?\/.*?home\/EventCard)['"];?/g,
-      "import EventCard from '$1';"
-    );
-    content = content.replace(
-      /import\s*\{\s*PublicationCard\s*\}\s*from\s*['"](\.\.?\/.*?home\/PublicationCard)['"];?/g,
-      "import PublicationCard from '$1';"
-    );
-    content = content.replace(
-      /import\s*\{\s*DocumentCard\s*\}\s*from\s*['"](\.\.?\/.*?home\/DocumentCard)['"];?/g,
-      "import DocumentCard from '$1';"
-    );
-
-    if (content !== originalContent) {
+    if (content !== original) {
       fs.writeFileSync(filePath, content, 'utf8');
       console.log(`✅ Corrigido: ${path.relative(process.cwd(), filePath)}`);
       fixedCount++;

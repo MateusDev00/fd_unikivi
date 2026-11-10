@@ -7,7 +7,7 @@ import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { Publication } from '@/types';
 import { api } from '@/lib/api';
 import { FilterChips } from '@/components/ui/FilterChips';
-import { PublicationCard } from '@/components/home/PublicationCard';
+import PublicationCard from '@/components/home/PublicationCard';
 import { Calendar, ArrowRight, Clock, Search } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
