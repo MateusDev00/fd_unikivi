@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       ORDER BY u.nome ASC
     `);
     return NextResponse.json({ data: result.rows });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
   }
 }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       [id_docente, id_disciplina, id_turma, cargo, nivel_academico]
     );
     return NextResponse.json({ success: true, data: result.rows[0] }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === '23505') {
       return NextResponse.json({ message: 'Este docente já está associado a esta turma e disciplina.' }, { status: 409 });
     }
