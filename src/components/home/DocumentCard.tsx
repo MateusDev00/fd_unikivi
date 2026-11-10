@@ -11,7 +11,7 @@ interface DocumentCardProps {
   document: Document;
 }
 
-export function DocumentCard({ document }: DocumentCardProps) {
+export default function DocumentCard({ document }: DocumentCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const formatFileSize = (bytes: number) => {

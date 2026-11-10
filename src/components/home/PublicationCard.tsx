@@ -12,7 +12,7 @@ interface PublicationCardProps {
   publication: Publication;
 }
 
-export function PublicationCard({ publication }: PublicationCardProps) {
+export default function PublicationCard({ publication }: PublicationCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
 
