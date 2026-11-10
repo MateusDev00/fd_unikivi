@@ -1,36 +1,62 @@
 import fs from 'fs';
 import path from 'path';
 
-const filesToFix = [
-  'src/app/api/associacoes/docentes/route.ts',
-  'src/app/api/associacoes/estudantes/route.ts',
-  'src/app/api/associacoes/docentes/[id]/route.ts',
-  'src/app/api/associacoes/estudantes/[id]/route.ts',
-  'src/app/api/relatorios/eventos/route.ts',
-  'src/app/api/relatorios/utilizadores/route.ts'
-];
+function walkDir(dir, callback) {
+  fs.readdirSync(dir).forEach((f) => {
+    let dirPath = path.join(dir, f);
+    let isDirectory = fs.statSync(dirPath).isDirectory();
+    isDirectory ? walkDir(dirPath, callback) : callback(dirPath);
+  });
+}
 
-console.log('🚀 A corrigir tipagem do TypeScript (catch error)...\n');
+const srcDir = path.resolve(process.cwd(), 'src');
+console.log('🚀 A procurar imports nomeados incorretos...\n');
 
-filesToFix.forEach((file) => {
-  const filePath = path.resolve(process.cwd(), file);
+let fixedCount = 0;
 
-  if (fs.existsSync(filePath)) {
+walkDir(srcDir, (filePath) => {
+  if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
     let content = fs.readFileSync(filePath, 'utf8');
-    const originalContent = content;
+    let originalContent = content;
 
-    // Substitui catch (error) por catch (error: any)
-    content = content.replace(/catch\s*\(\s*error\s*\)/g, 'catch (error: any)');
+    // Corrigir EventCard
+    content = content.replace(
+      /import\s*\{\s*EventCard\s*\}\s*from\s*['"]@\/components\/home\/EventCard['"];?/g,
+      "import EventCard from '@/components/home/EventCard';"
+    );
+
+    // Corrigir PublicationCard
+    content = content.replace(
+      /import\s*\{\s*PublicationCard\s*\}\s*from\s*['"]@\/components\/home\/PublicationCard['"];?/g,
+      "import PublicationCard from '@/components/home/PublicationCard';"
+    );
+
+    // Corrigir DocumentCard
+    content = content.replace(
+      /import\s*\{\s*DocumentCard\s*\}\s*from\s*['"]@\/components\/home\/DocumentCard['"];?/g,
+      "import DocumentCard from '@/components/home/DocumentCard';"
+    );
+
+    // Suporte para caminhos relativos (ex: ../home/EventCard)
+    content = content.replace(
+      /import\s*\{\s*EventCard\s*\}\s*from\s*['"](\.\.?\/.*?home\/EventCard)['"];?/g,
+      "import EventCard from '$1';"
+    );
+    content = content.replace(
+      /import\s*\{\s*PublicationCard\s*\}\s*from\s*['"](\.\.?\/.*?home\/PublicationCard)['"];?/g,
+      "import PublicationCard from '$1';"
+    );
+    content = content.replace(
+      /import\s*\{\s*DocumentCard\s*\}\s*from\s*['"](\.\.?\/.*?home\/DocumentCard)['"];?/g,
+      "import DocumentCard from '$1';"
+    );
 
     if (content !== originalContent) {
       fs.writeFileSync(filePath, content, 'utf8');
-      console.log(`✅ Corrigido: ${file}`);
-    } else {
-      console.log(`ℹ️  Já estava correto ou não foi encontrado o bloco catch: ${file}`);
+      console.log(`✅ Corrigido: ${path.relative(process.cwd(), filePath)}`);
+      fixedCount++;
     }
-  } else {
-    console.log(`⚠️  Ficheiro não encontrado (ignorado): ${file}`);
   }
 });
 
-console.log('\n🎉 Concluído! Podes fazer o commit e o push.');
+console.log(`\n🎉 Concluído! ${fixedCount} ficheiro(s) corrigido(s).`);
