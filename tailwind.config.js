@@ -11,8 +11,8 @@ export default {
       colors: {
         primary: '#8c0034',        // vinho principal
         'primary-light': '#fce4ec', // rosa/vinho claro
-        dark: '#1a1a1a',            // tom neutro escuro (substitui azul)
-        'dark-light': '#2d2d2d',    // neutro escuro mais claro
+        dark: '#0a2b1d',            // tom neutro escuro (substitui azul)
+        'dark-light': '#0a2b1d',    // neutro escuro mais claro
         heading: '#8c0034',         // títulos em vinho
         body: '#4b5563',            // texto secundário
         surface: '#ffffff',

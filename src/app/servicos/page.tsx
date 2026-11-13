@@ -94,7 +94,7 @@ export default function ServicosPage() {
       <Header />
       <main className="pt-20">
         {/* Hero da página */}
-        <section className="relative bg-dark py-24 overflow-hidden">
+        <section className="relative bg-[#0a2b1d] py-24 overflow-hidden">
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle,_white_1px,_transparent_1px)] bg-[size:20px_20px]" />
           <div className="container mx-auto px-4 relative z-10 text-center">
             <motion.p
